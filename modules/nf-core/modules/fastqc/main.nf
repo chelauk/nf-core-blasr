@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process fastqc {
+process FASTQC {
     tag "$meta.id"
     label 'process_medium'
     publishdir "${params.outdir}",
