@@ -1,5 +1,5 @@
 // import generic module functions
-include { initOptions; saveFiles; getsoftwarename } from './functions'
+include { initOptions; saveFiles; getSoftwareName } from './functions'
 
 params.options = [:]
 options        = initOptions(params.options)
@@ -9,7 +9,7 @@ process fastqc {
     label 'process_medium'
     publishdir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveas: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getsoftwarename(task.process), meta:meta, publish_by_meta:['id']) }
+        saveas: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::fastqc=0.11.9" : null)
     if (workflow.containerengine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -28,7 +28,7 @@ process fastqc {
 
     script:
     // add soft-links to original fastqs for consistent naming in pipeline
-    def software = getsoftwarename(task.process)
+    def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     if (meta.single_end) {
         """
