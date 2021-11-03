@@ -66,7 +66,12 @@ process BLASR {
     --fastMaxInterval \\
     --fastSDP \\
 	--aggressiveIntervalCut \\
-    --bam 
+    --bam
     echo \$(blasr --version 2>&1) | sed 's/^.*blasr //; s/Using.*\$//' > ${software}.version.txt
+    """
+    stub:
+    """
+    touch ${meta.id}.bam
+    touch ${software}.version.txt
     """
 }
