@@ -1,18 +1,18 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
+// import generic module functions
+include { initoptions; savefiles; getsoftwarename } from './functions'
 
 params.options = [:]
-options        = initOptions(params.options)
+options        = initoptions(params.options)
 
-process FASTQC {
+process fastqc {
     tag "$meta.id"
     label 'process_medium'
-    publishDir "${params.outdir}",
+    publishdir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        saveas: { filename -> savefiles(filename:filename, options:params.options, publish_dir:getsoftwarename(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::fastqc=0.11.9" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
+    if (workflow.containerengine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
     } else {
         container "quay.io/biocontainers/fastqc:0.11.9--0"
@@ -27,21 +27,27 @@ process FASTQC {
     path  "*.version.txt"          , emit: version
 
     script:
-    // Add soft-links to original FastQs for consistent naming in pipeline
-    def software = getSoftwareName(task.process)
+    // add soft-links to original fastqs for consistent naming in pipeline
+    def software = getsoftwarename(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     if (meta.single_end) {
         """
         [ ! -f  ${prefix}.fastq.gz ] && ln -s $reads ${prefix}.fastq.gz
         fastqc $options.args --threads $task.cpus ${prefix}.fastq.gz
-        fastqc --version | sed -e "s/FastQC v//g" > ${software}.version.txt
+        fastqc --version | sed -e "s/fastqc v//g" > ${software}.version.txt
         """
     } else {
         """
         [ ! -f  ${prefix}_1.fastq.gz ] && ln -s ${reads[0]} ${prefix}_1.fastq.gz
         [ ! -f  ${prefix}_2.fastq.gz ] && ln -s ${reads[1]} ${prefix}_2.fastq.gz
         fastqc $options.args --threads $task.cpus ${prefix}_1.fastq.gz ${prefix}_2.fastq.gz
-        fastqc --version | sed -e "s/FastQC v//g" > ${software}.version.txt
+        fastqc --version | sed -e "s/fastqc v//g" > ${software}.version.txt
         """
     }
+    stub:
+    """
+    touch ${meta.id}.html
+    touch ${meta.id}.zip
+    touch ${software}.version.txt
+    """
 }
