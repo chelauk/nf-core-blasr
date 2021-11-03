@@ -2,7 +2,7 @@
 include { initoptions; savefiles; getsoftwarename } from './functions'
 
 params.options = [:]
-options        = initoptions(params.options)
+options        = initOptions(params.options)
 
 process fastqc {
     tag "$meta.id"
