@@ -1,5 +1,5 @@
 // import generic module functions
-include { initOptions; savefiles; getsoftwarename } from './functions'
+include { initOptions; saveFiles; getsoftwarename } from './functions'
 
 params.options = [:]
 options        = initOptions(params.options)
@@ -9,7 +9,7 @@ process fastqc {
     label 'process_medium'
     publishdir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveas: { filename -> savefiles(filename:filename, options:params.options, publish_dir:getsoftwarename(task.process), meta:meta, publish_by_meta:['id']) }
+        saveas: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getsoftwarename(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::fastqc=0.11.9" : null)
     if (workflow.containerengine == 'singularity' && !params.singularity_pull_docker_container) {
