@@ -33,13 +33,13 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { BLASR } from './workflows/blasr'
+include { BLASR_WF } from './workflows/blasr'
 
 //
 // WORKFLOW: Run main nf-core/blasr analysis pipeline
 //
 workflow NFCORE_BLASR {
-    BLASR ()
+    BLASR_WF ()
 }
 
 /*

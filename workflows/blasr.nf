@@ -11,7 +11,14 @@ WorkflowBlasr.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ params.input,
+    params.multiqc_config,
+    params.fasta
+]
+
+// Intialize file channels based on params, defined in the params.genomes[params.genome] scope
+fasta = params.fasta ? Channel.fromPath(params.fasta).collect() : ch_dummy_file
+
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -60,6 +67,12 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 include { FASTQC  } from '../modules/nf-core/modules/fastqc/main'  addParams( options: modules['fastqc'] )
 include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( options: multiqc_options   )
 
+//
+// MODULE: Install from local
+//
+
+include { BLASR  } from '../modules/local/blasr/main'  addParams( options: modules['blasr'] )
+
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -69,7 +82,7 @@ include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( op
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow BLASR {
+workflow BLASR_WF {
 
     ch_software_versions = Channel.empty()
 
@@ -89,8 +102,17 @@ workflow BLASR {
     ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
 
     //
+    // MODULE: Run blasr
+    //
+    BLASR (
+        INPUT_CHECK.out.reads,fasta
+    )
+
+    //
     // MODULE: Pipeline reporting
     //
+
+
     ch_software_versions
         .map { it -> if (it) [ it.baseName, it ] }
         .groupTuple()
