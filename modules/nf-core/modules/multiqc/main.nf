@@ -28,7 +28,7 @@ process MULTIQC {
 
     script:
     """
-    multiqc -f $options.args .
+    multiqc -f  $options.args .
 
     cat <<-END_VERSIONS > versions.yml
     ${getProcessName(task.process)}:
@@ -40,6 +40,7 @@ process MULTIQC {
     touch multiqc_report.html
     touch test_data
     touch test_plots
+
 
     cat <<-END_VERSIONS > versions.yml
     ${getProcessName(task.process)}:

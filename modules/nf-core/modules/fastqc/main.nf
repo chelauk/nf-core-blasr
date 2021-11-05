@@ -51,7 +51,6 @@ process FASTQC {
         END_VERSIONS
         """
     }
-
     stub:
     def prefix = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
@@ -65,5 +64,4 @@ process FASTQC {
         ${getSoftwareName(task.process)}: \$( fastqc --version | sed -e "s/FastQC v//g" )
         END_VERSIONS
     """
-
 }

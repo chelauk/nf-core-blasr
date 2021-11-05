@@ -33,18 +33,16 @@ process BLASR {
     script:
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def fastq    = reads.replaceAll(".gz","")
+    def fastq    = reads.toString().replaceAll(".gz","")
     """
-    gunzip $reads
-    blasr $fastq $fasta \\
+    blasr $bam $fasta \\
     --minMatch 15 \\
-    --maxMatch 20 \\
-	--advanceHalf \\
-    --advanceExactMatches 10 \\
-    --fastMaxInterval \\
-    --fastSDP \\
+	--maxMatch 20 \\
+	--advanceExactMatches \\
+	--fastMaxInterval \\
+	--fastSDP \\
 	--aggressiveIntervalCut \\
-    --bam
+	--bam ${meta.id}.bam
     echo \$(blasr --version 2>&1) | sed 's/^.*blasr //; s/Using.*\$//' > ${software}.version.txt
     """
     stub:
