@@ -33,8 +33,10 @@ process BLASR {
     script:
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def fastq    = reads.replaceAll(".gz","")
     """
-    blasr $reads $fasta \\
+    gunzip $reads
+    blasr $fastq $fasta \\
     --minMatch 15 \\
     --maxMatch 20 \\
 	--advanceHalf \\
