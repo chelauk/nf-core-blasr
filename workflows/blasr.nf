@@ -77,7 +77,7 @@ include { BLASR  } from '../modules/local/blasr/main'  addParams( options: modul
 // MODULE: Install from nf-core/modules
 //Applications
 
-include { FASTQC  } from '../modules/nf-core/modules/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
+include { FASTQC  } from '../modules/nf-core/modules/picard/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
