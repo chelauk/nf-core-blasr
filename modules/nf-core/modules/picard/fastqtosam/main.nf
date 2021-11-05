@@ -5,7 +5,7 @@ include { initOptions; saveFiles; getSoftwareName; getProcessName } from './func
 params.options = [:]
 options        = initOptions(params.options)
 
-process PICARD_SORTSAM {
+process PICARD_FASTQTOSAM {
     tag "$meta.id"
     label 'process_high'
     publishDir "${params.outdir}",

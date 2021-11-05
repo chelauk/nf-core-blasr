@@ -73,6 +73,11 @@ include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( op
 
 include { BLASR  } from '../modules/local/blasr/main'  addParams( options: modules['blasr'] )
 
+//
+// MODULE: Install from nf-core/modules
+//Applications
+
+include { FASTQC  } from '../modules/nf-core/modules/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -102,10 +107,18 @@ workflow BLASR_WF {
     ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
 
     //
+    // MODULE: Run fastqtosam
+    //
+    PICARD_FASTQTOSAM  (
+        INPUT_CHECK.out.reads
+    )
+
+    //
     // MODULE: Run blasr
     //
+
     BLASR (
-        INPUT_CHECK.out.reads,fasta
+        PICARD_FASTQTOSAM.out.reads,fasta
     )
 
     //
