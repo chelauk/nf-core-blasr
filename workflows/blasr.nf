@@ -77,7 +77,7 @@ include { BLASR  } from '../modules/local/blasr/main'  addParams( options: modul
 // MODULE: Install from nf-core/modules
 //Applications
 
-include { FASTQC  } from '../modules/nf-core/modules/picard/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
+include { PICARD_FASTQTOSAM  } from '../modules/nf-core/modules/picard/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -118,7 +118,7 @@ workflow BLASR_WF {
     //
 
     BLASR (
-        PICARD_FASTQTOSAM.out.reads,fasta
+        PICARD_FASTQTOSAM.out.bam,fasta
     )
 
     //
