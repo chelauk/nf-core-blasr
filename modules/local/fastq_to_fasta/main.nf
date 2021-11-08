@@ -33,7 +33,7 @@ process FASTQ_TO_FASTA {
     script:
 	def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    zcat $reads | sed -n \'1~4s/^@/>/p;2~4p\' > ${prefix}.fasta
+    fastq_to_fasta.sh $reads ${prefix}.fasta
     """
     stub:
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
