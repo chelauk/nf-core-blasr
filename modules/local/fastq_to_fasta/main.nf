@@ -26,7 +26,7 @@ process FASTQ_TO_FASTA {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("*fastq"), emit: fasta
+    tuple val(meta), path("*fasta"), emit: fasta
 
     script:
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
