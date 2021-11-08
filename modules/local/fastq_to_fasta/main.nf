@@ -15,6 +15,8 @@ process FASTQ_TO_FASTA {
     //               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
     //               For Conda, the build (i.e. "h9402c20_2") must be EXCLUDED to support installation on different operating systems.
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
+    // 1~4p matches every 4th line, starting with the 1st:
+    // 2~4p matches every 4th line, starting with the 2nd:
     conda (params.enable_conda ? "bioconda::blasr=5.3.5" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
 		container "https://depot.galaxyproject.org/singularity/blasr:5.3.5--0"
