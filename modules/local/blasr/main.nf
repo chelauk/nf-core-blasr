@@ -23,11 +23,11 @@ process BLASR {
     }
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(bam)
     path fasta
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*bam"), emit: bam
     path "*.version.txt"          , emit: version
 
     script:

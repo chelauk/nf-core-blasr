@@ -23,7 +23,7 @@ process PICARD_FASTQTOSAM {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*.unaligned.bam"), emit: bam
     path "versions.yml"                  , emit: version
 
     script:
@@ -39,7 +39,7 @@ process PICARD_FASTQTOSAM {
         FastqToSam \\
         -Xmx${avail_mem}g \\
         --INPUT $reads \\
-        --OUTPUT ${prefix}.bam \\
+        --OUTPUT ${prefix}.unaligned.bam \\
         SM=${meta.id}
 
     cat <<-END_VERSIONS > versions.yml
@@ -50,7 +50,7 @@ process PICARD_FASTQTOSAM {
     stub:
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
 	"""
-	touch ${prefix}.bam
+	touch ${prefix}.unaligned.bam
     cat <<-END_VERSIONS > versions.yml
     ${getProcessName(task.process)}:
         ${getSoftwareName(task.process)}: \$(picard SortSam --version 2>&1 | grep -o 'Version:.*' | cut -f2- -d:)
