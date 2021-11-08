@@ -19,7 +19,7 @@ process FASTQ_TO_FASTA {
     // 2~4p matches every 4th line, starting with the 2nd:
     conda (params.enable_conda ? "bioconda::blasr=5.3.5" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-		container "https://depot.galaxyproject.org/singularity/blasr:5.3.5--0"
+        container "https://depot.galaxyproject.org/singularity/sed:4.7.0"
     } else {
         container "quay.io/biocontainers/YOUR-TOOL-HERE"
     }
