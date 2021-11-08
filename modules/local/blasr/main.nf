@@ -38,7 +38,8 @@ process BLASR {
     blasr $bam $fasta \\
     --minMatch 15 \\
 	--maxMatch 20 \\
-	--advanceExactMatches \\
+    --advanceHalf \\
+    --advanceExactMatches 10 \\
 	--fastMaxInterval \\
 	--fastSDP \\
 	--aggressiveIntervalCut \\
