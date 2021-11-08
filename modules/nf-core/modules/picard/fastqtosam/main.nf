@@ -38,9 +38,10 @@ process PICARD_FASTQTOSAM {
     picard \\
         FastqToSam \\
         -Xmx${avail_mem}g \\
-        --INPUT $reads \\
-        --OUTPUT ${prefix}.unaligned.bam \\
+        F1=$reads \\
+        O=${prefix}.unaligned.bam \\
         SM=${meta.id}
+        RG=lo001
 
     cat <<-END_VERSIONS > versions.yml
     ${getProcessName(task.process)}:
