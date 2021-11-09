@@ -37,13 +37,14 @@ process BLASR {
     """
     blasr $bam $fasta \\
     --minMatch 15 \\
-	--maxMatch 20 \\
+    --maxMatch 20 \\
     --advanceHalf \\
     --advanceExactMatches 10 \\
-	--fastMaxInterval \\
-	--fastSDP \\
-	--aggressiveIntervalCut \\
-	--bam ${meta.id}.bam
+    --fastMaxInterval \\
+    --fastSDP \\
+    --aggressiveIntervalCut \\
+    --bam \\
+    --out ${meta.id}.bam
     echo \$(blasr --version 2>&1) | sed 's/^.*blasr //; s/Using.*\$//' > ${software}.version.txt
     """
     stub:
