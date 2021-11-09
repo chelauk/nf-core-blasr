@@ -19,7 +19,7 @@ process QUALIMAP_BAMQC {
     }
 
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(bam), path(bam) 
     path gff
     val use_gff
 
@@ -60,4 +60,16 @@ process QUALIMAP_BAMQC {
         ${getSoftwareName(task.process)}: \$(echo \$(qualimap 2>&1) | sed 's/^.*QualiMap v.//; s/Built.*\$//')
     END_VERSIONS
     """
+    stub:
+    prefix         = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    """
+    unset DISPLAY
+    mkdir ${prefix}
+    touch ${prefix}/thing.txt
+    cat <<-END_VERSIONS > versions.yml
+    ${getProcessName(task.process)}:
+        ${getSoftwareName(task.process)}: \$(echo \$(qualimap java_options="-Djava.awt.headless=true" 2>&1) | sed 's/^.*QualiMap v.//; s/Built.*\$//')
+    END_VERSIONS
+    """
+
 }

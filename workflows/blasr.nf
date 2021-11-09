@@ -78,7 +78,7 @@ include { FASTQ_TO_FASTA  } from '../modules/local/fastq_to_fasta/main'  addPara
 // MODULE: Install from nf-core
 //
 
-include { SAMTOOLS_SORT }  from '../modules/nf-core/modules/samtools/index/main' addParams ( options: modules['samtools_sort'])
+include { SAMTOOLS_SORT }  from '../modules/nf-core/modules/samtools/sort/main' addParams ( options: modules['samtools_sort'])
 include { SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main' addParams ( options: modules['samtools_index'])
 include { QUALIMAP_BAMQC } from '../modules/nf-core/modules/qualimap/bamqc/main' addParams ( options: modules['bamqc'])
 
@@ -143,6 +143,8 @@ workflow BLASR_WF {
         SAMTOOLS_SORT.out.bam
     )
 
+    bamqc_ch = SAMTOOLS_SORT.out.bam.cross(SAMTOOLS_INDEX.out.bai)
+                                    .map{bam,bai -> [bam[0],bam[1],bai[1]]}
     //
     // MODULE: Run Bamqc
     //
@@ -150,7 +152,7 @@ workflow BLASR_WF {
     gff     = file("dummy_file.txt")
     use_gff = false
 
-    QUALIMAP_BAMQC ( SAMTOOLS_INDEX.out.bam, gff, use_gff )
+    QUALIMAP_BAMQC ( bamqc_ch, gff, use_gff )
 
 
     //
