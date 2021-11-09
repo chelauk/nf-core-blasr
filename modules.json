@@ -9,7 +9,13 @@
             "multiqc": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
-            "picard/sortsam": {
+            "qualimap/bamqc": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "samtools/index": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "samtools/sort": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             }
         }

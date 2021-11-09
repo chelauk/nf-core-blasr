@@ -72,14 +72,16 @@ include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( op
 //
 
 include { BLASR  } from '../modules/local/blasr/main'  addParams( options: modules['blasr'] )
+include { FASTQ_TO_FASTA  } from '../modules/local/fastq_to_fasta/main'  addParams( options: modules['fastqtofasta'] )
 
 //
-// MODULE: Install from nf-core/modules
-//Applications
+// MODULE: Install from nf-core
+//
 
-//include { PICARD_FASTQTOSAM  } from '../modules/nf-core/modules/picard/fastqtosam/main'  addParams( options: modules['fastqtosam'] )
+include { SAMTOOLS_SORT }  from '../modules/nf-core/modules/samtools/index/main' addParams ( options: modules['samtools_sort'])
+include { SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main' addParams ( options: modules['samtools_index'])
+include { QUALIMAP_BAMQC } from '../modules/nf-core/modules/qualimap/bamqc/main' addParams ( options: modules['bamqc'])
 
-include { FASTQ_TO_FASTA  } from '../modules/local/fastq_to_fasta/main'  addParams( options: modules['fastqtofasta'] )
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -130,6 +132,28 @@ workflow BLASR_WF {
     )
 
     //
+    // MODULE: Run Samtools sort and index
+    //
+
+    SAMTOOLS_SORT (
+        BLASR.out.bam
+    )
+
+    SAMTOOLS_INDEX (
+        SAMTOOLS_SORT.out.bam
+    )
+
+    //
+    // MODULE: Run Bamqc
+    //
+
+    gff     = file("dummy_file.txt")
+    use_gff = false
+
+    QUALIMAP_BAMQC ( SAMTOOLS_INDEX.out.bam, gff, use_gff )
+
+
+    //
     // MODULE: Pipeline reporting
     //
 
@@ -158,6 +182,7 @@ workflow BLASR_WF {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QUALIMAP_BAMQC.out.results.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect()
